@@ -1,12 +1,12 @@
 package io.github.liuziyuan.retrofit.core.extension;
 
 import io.github.liuziyuan.retrofit.core.RetrofitResourceContext;
+import io.github.liuziyuan.retrofit.core.util.AntPathMatcher;
+import io.github.liuziyuan.retrofit.core.util.PathMatcher;
 import lombok.SneakyThrows;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.springframework.util.AntPathMatcher;
-import org.springframework.util.PathMatcher;
 import retrofit2.Invocation;
 import retrofit2.internal.EverythingIsNonNull;
 
@@ -23,7 +23,7 @@ public abstract class BaseInterceptor implements Interceptor {
     protected RetrofitResourceContext context;
     private String[] include;
     private String[] exclude;
-    private PathMatcher pathMatcher = new AntPathMatcher();
+    private final PathMatcher pathMatcher = new AntPathMatcher();
 
 
     protected BaseInterceptor() {
