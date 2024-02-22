@@ -6,7 +6,7 @@
 
     <groupId>io.github.liuziyuan</groupId>
     <artifactId>retrofit-core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>retrofit-core</description>
