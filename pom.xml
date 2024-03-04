@@ -10,7 +10,7 @@
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>retrofit-core</description>
-    <url>https://github.com/liuziyuan/retrofit-core</url>
+    <url>https://github.com/liuziyuan/${project.artifactId}</url>
 
     <licenses>
         <license>
@@ -20,9 +20,9 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/liuziyuan/retrofit-core/tree/main</url>
-        <connection>scm:git:git://github.com/liuziyuan/retrofit-core.git</connection>
-        <developerConnection>scm:git:ssh://github.com/liuziyuan/retrofit-core.git</developerConnection>
+        <url>https://github.com/liuziyuan/${project.artifactId}/tree/main</url>
+        <connection>scm:git:git://github.com/liuziyuan/${project.artifactId}.git</connection>
+        <developerConnection>scm:git:ssh://github.com/liuziyuan/${project.artifactId}.git</developerConnection>
     </scm>
 
     <developers>
