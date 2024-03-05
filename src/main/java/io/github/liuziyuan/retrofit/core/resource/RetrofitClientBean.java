@@ -1,6 +1,5 @@
 package io.github.liuziyuan.retrofit.core.resource;
 
-import io.github.liuziyuan.retrofit.core.annotation.RetrofitBuilder;
 import io.github.liuziyuan.retrofit.core.annotation.RetrofitInterceptor;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,7 +21,7 @@ public class RetrofitClientBean {
     private String retrofitInstanceName;
     private String realHostUrl;
     private UrlStatus urlStatus;
-    private RetrofitBuilder retrofitBuilder;
+    private RetrofitBuilderBean retrofitBuilder;
     private Set<RetrofitInterceptor> interceptors;
     private Set<RetrofitInterceptor> inheritedInterceptors;
     private List<RetrofitApiServiceBean> retrofitServices;

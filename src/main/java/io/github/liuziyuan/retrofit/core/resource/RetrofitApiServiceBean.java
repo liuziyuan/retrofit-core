@@ -21,7 +21,7 @@ public class RetrofitApiServiceBean {
     private Class<?> parentClazz;
     private RetrofitUrl retrofitUrl;
 //    private RetrofitCloudService retrofitCloudService;
-    private RetrofitBuilder retrofitBuilder;
+private RetrofitBuilderBean retrofitBuilder;
     /**
      * parent Interface interceptors
      */
