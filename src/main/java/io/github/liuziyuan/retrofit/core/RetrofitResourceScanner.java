@@ -9,6 +9,7 @@ import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class RetrofitResourceScanner {
 
+    private String[] basePackages;
     public abstract Set<Class<?>> customRetrofitResourceClasses(Reflections reflections);
 
     public Set<Class<?>> doScan(String... basePackages) {
-        Reflections reflections = getReflections(basePackages);
+        this.basePackages = basePackages;
+        Reflections reflections = getReflections(this.basePackages);
         final Set<Class<?>> retrofitBuilderClasses = getRetrofitResourceClasses(reflections, RetrofitBuilder.class);
         final Set<Class<?>> retrofitBaseApiClasses = getRetrofitResourceClasses(reflections, RetrofitBase.class);
         retrofitBuilderClasses.addAll(retrofitBaseApiClasses);
@@ -54,6 +57,11 @@ public abstract class RetrofitResourceScanner {
         return new Reflections(configuration);
     }
 
+    public Set<Class<?>> getRetrofitResource(Class<? extends Annotation> clazz) {
+        Reflections reflections = getReflections(this.basePackages);
+        return reflections.getTypesAnnotatedWith(clazz);
+    }
+
     public Set<Class<?>> getRetrofitResource(Class<? extends Annotation> clazz, String... basePackages) {
         Reflections reflections = getReflections(basePackages);
         return reflections.getTypesAnnotatedWith(clazz);
@@ -61,9 +69,13 @@ public abstract class RetrofitResourceScanner {
 
     protected Set<Class<?>> getRetrofitResourceClasses(Reflections reflections, Class<? extends Annotation> annotationClass) {
         final Set<Class<?>> classSet = reflections.getTypesAnnotatedWith(annotationClass);
-        for (Class<?> clazz : classSet) {
+        Iterator<Class<?>> iterator = classSet.iterator();
+        while (iterator.hasNext()) {
+            Class<?> clazz = iterator.next();
             if (!clazz.isInterface()) {
-                throw new ProxyTypeIsNotInterfaceException("[" + clazz.getName() + "] requires an interface type");
+                // 使用iterator的remove方法安全地移除元素
+                iterator.remove();
+                log.warn("[{}] requires an interface type", clazz.getName());
             }
         }
         return classSet;

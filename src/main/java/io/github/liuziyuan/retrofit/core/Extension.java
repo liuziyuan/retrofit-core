@@ -2,9 +2,9 @@ package io.github.liuziyuan.retrofit.core;
 
 import java.lang.annotation.Annotation;
 
-public abstract class Extension {
+public interface Extension {
 
+    Class<? extends Annotation> createAnnotation();
 
-    public abstract Class<? extends Annotation> createAnnotation();
-    public abstract Class<?> createInterceptor();
+    Class<?> createInterceptor();
 }
