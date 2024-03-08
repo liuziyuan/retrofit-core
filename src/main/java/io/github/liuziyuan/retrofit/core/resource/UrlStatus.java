@@ -4,5 +4,23 @@ package io.github.liuziyuan.retrofit.core.resource;
  * @author liuziyuan
  */
 public enum UrlStatus {
-    NULL, DEFAULT_URL_ONLY, DYNAMIC_URL_ONLY, DEFAULT_DYNAMIC_ALL
+
+    /**
+     * Non URL
+     */
+    NULL,
+
+    /**
+     * Use retrofitBuilder Default URL
+     */
+    DEFAULT_URL_ONLY,
+
+    /**
+     * User Dynamic URL
+     */
+    DYNAMIC_URL_ONLY,
+    /**
+     * Use all of Default and Dynamic Url
+     */
+    DEFAULT_DYNAMIC_ALL
 }
