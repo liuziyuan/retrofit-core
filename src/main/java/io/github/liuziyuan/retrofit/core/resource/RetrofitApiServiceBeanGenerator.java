@@ -65,14 +65,7 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
         RetrofitBuilder retrofitBuilderAnnotation = retrofitBuilderClazz.getDeclaredAnnotation(RetrofitBuilder.class);
         RetrofitBuilderBean retrofitBuilderBean = new RetrofitBuilderBean();
         if (retrofitBuilderAnnotation.denyGlobalConfig()) {
-            retrofitBuilderBean.setEnable(false);
-            retrofitBuilderBean.setBaseUrl(retrofitBuilderAnnotation.baseUrl());
-            retrofitBuilderBean.setClient(retrofitBuilderAnnotation.client());
-            retrofitBuilderBean.setCallbackExecutor(retrofitBuilderAnnotation.callbackExecutor());
-            retrofitBuilderBean.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory());
-            retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory());
-            retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly());
-            retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory());
+            setRetrofitBuilderBeanByAnnotation(retrofitBuilderAnnotation, retrofitBuilderBean);
         } else {
             if (globalRetrofitBuilderBean.isEnable()) {
                 retrofitBuilderBean.setEnable(true);
@@ -93,9 +86,22 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
                     retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly() != null ? retrofitBuilderAnnotation.validateEagerly() : globalRetrofitBuilderBean.getValidateEagerly());
                     retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory() != null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderBean.getCallFactory());
                 }
+            } else {
+                setRetrofitBuilderBeanByAnnotation(retrofitBuilderAnnotation, retrofitBuilderBean);
             }
         }
         return retrofitBuilderBean;
+    }
+
+    private void setRetrofitBuilderBeanByAnnotation(RetrofitBuilder retrofitBuilderAnnotation, RetrofitBuilderBean retrofitBuilderBean) {
+        retrofitBuilderBean.setEnable(false);
+        retrofitBuilderBean.setBaseUrl(retrofitBuilderAnnotation.baseUrl());
+        retrofitBuilderBean.setClient(retrofitBuilderAnnotation.client());
+        retrofitBuilderBean.setCallbackExecutor(retrofitBuilderAnnotation.callbackExecutor());
+        retrofitBuilderBean.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory());
+        retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory());
+        retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly());
+        retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory());
     }
 
     @Override
