@@ -24,12 +24,12 @@ public class RetrofitClientBean {
     private RetrofitBuilderBean retrofitBuilder;
     private Set<RetrofitInterceptor> interceptors;
     private Set<RetrofitInterceptor> inheritedInterceptors;
-    private List<RetrofitApiServiceBean> retrofitServices;
+    private List<RetrofitApiServiceBean> retrofitApiServiceBeans;
 
     public RetrofitClientBean() {
         this.interceptors = new LinkedHashSet<>();
         this.inheritedInterceptors = new LinkedHashSet<>();
-        this.retrofitServices = new ArrayList<>();
+        this.retrofitApiServiceBeans = new ArrayList<>();
     }
 
     public void setRetrofitInstanceName(String retrofitInstanceName) {
@@ -37,7 +37,7 @@ public class RetrofitClientBean {
     }
 
     public void addRetrofitServiceBean(RetrofitApiServiceBean retrofitApiServiceBean) {
-        retrofitServices.add(retrofitApiServiceBean);
+        retrofitApiServiceBeans.add(retrofitApiServiceBean);
         retrofitApiServiceBean.setRetrofitClientBean(this);
     }
 

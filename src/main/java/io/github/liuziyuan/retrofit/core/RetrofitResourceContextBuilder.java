@@ -46,7 +46,7 @@ public abstract class RetrofitResourceContextBuilder {
 
     private void setRetrofitServiceBeanHashMap() {
         for (RetrofitClientBean retrofitClient : getRetrofitClientBeanList()) {
-            for (RetrofitApiServiceBean retrofitService : retrofitClient.getRetrofitServices()) {
+            for (RetrofitApiServiceBean retrofitService : retrofitClient.getRetrofitApiServiceBeans()) {
                 retrofitServiceBeanHashMap.put(retrofitService.getSelfClazz().getName(), retrofitService);
             }
         }
