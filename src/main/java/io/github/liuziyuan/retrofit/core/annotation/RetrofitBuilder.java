@@ -80,4 +80,6 @@ public @interface RetrofitBuilder {
     Class<? extends BaseCallFactoryBuilder> callFactory() default BaseCallFactoryBuilder.class;
 
     String validateEagerly() default "0";
+
+    boolean denyGlobalConfig() default false;
 }

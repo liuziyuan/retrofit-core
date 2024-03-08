@@ -64,26 +64,7 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
     private RetrofitBuilderBean getRetrofitBuilder(Class<?> retrofitBuilderClazz, RetrofitBuilderBean globalRetrofitBuilderBean) {
         RetrofitBuilder retrofitBuilderAnnotation = retrofitBuilderClazz.getDeclaredAnnotation(RetrofitBuilder.class);
         RetrofitBuilderBean retrofitBuilderBean = new RetrofitBuilderBean();
-        if (globalRetrofitBuilderBean.isEnable()) {
-            retrofitBuilderBean.setEnable(true);
-            if (globalRetrofitBuilderBean.getOverwriteType() == OverrideRule.GLOBAL_FIRST) {
-                retrofitBuilderBean.setBaseUrl(StringUtils.isNotBlank(globalRetrofitBuilderBean.getBaseUrl()) ? globalRetrofitBuilderBean.getBaseUrl() : retrofitBuilderAnnotation.baseUrl());
-                retrofitBuilderBean.setClient(globalRetrofitBuilderBean.getClient() != null ? globalRetrofitBuilderBean.getClient() : retrofitBuilderAnnotation.client());
-                retrofitBuilderBean.setCallbackExecutor(globalRetrofitBuilderBean.getCallbackExecutor() != null ? globalRetrofitBuilderBean.getCallbackExecutor() : retrofitBuilderAnnotation.callbackExecutor());
-                retrofitBuilderBean.setAddCallAdapterFactory(globalRetrofitBuilderBean.getAddCallAdapterFactory() != null ? globalRetrofitBuilderBean.getAddCallAdapterFactory() : retrofitBuilderAnnotation.addCallAdapterFactory());
-                retrofitBuilderBean.setAddConverterFactory(globalRetrofitBuilderBean.getAddConverterFactory() != null ? globalRetrofitBuilderBean.getAddConverterFactory() : retrofitBuilderAnnotation.addConverterFactory());
-                retrofitBuilderBean.setValidateEagerly(globalRetrofitBuilderBean.getValidateEagerly() != null ? globalRetrofitBuilderBean.getValidateEagerly() : retrofitBuilderAnnotation.validateEagerly());
-                retrofitBuilderBean.setCallFactory(globalRetrofitBuilderBean.getCallFactory() != null ? globalRetrofitBuilderBean.getCallFactory() : retrofitBuilderAnnotation.callFactory());
-            } else {
-                retrofitBuilderBean.setBaseUrl(StringUtils.isNotBlank(retrofitBuilderAnnotation.baseUrl()) ? retrofitBuilderAnnotation.baseUrl() : globalRetrofitBuilderBean.getBaseUrl());
-                retrofitBuilderBean.setClient(retrofitBuilderAnnotation.client() != null ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderBean.getClient());
-                retrofitBuilderBean.setCallbackExecutor(retrofitBuilderAnnotation.callbackExecutor() != null ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderBean.getCallbackExecutor());
-                retrofitBuilderBean.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory() != null ? retrofitBuilderAnnotation.addCallAdapterFactory() : globalRetrofitBuilderBean.getAddCallAdapterFactory());
-                retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory() != null ? retrofitBuilderAnnotation.addConverterFactory() : globalRetrofitBuilderBean.getAddConverterFactory());
-                retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly() != null ? retrofitBuilderAnnotation.validateEagerly() : globalRetrofitBuilderBean.getValidateEagerly());
-                retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory() != null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderBean.getCallFactory());
-            }
-        } else {
+        if (retrofitBuilderAnnotation.denyGlobalConfig()) {
             retrofitBuilderBean.setEnable(false);
             retrofitBuilderBean.setBaseUrl(retrofitBuilderAnnotation.baseUrl());
             retrofitBuilderBean.setClient(retrofitBuilderAnnotation.client());
@@ -92,6 +73,27 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
             retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory());
             retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly());
             retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory());
+        } else {
+            if (globalRetrofitBuilderBean.isEnable()) {
+                retrofitBuilderBean.setEnable(true);
+                if (globalRetrofitBuilderBean.getOverwriteType() == OverrideRule.GLOBAL_FIRST) {
+                    retrofitBuilderBean.setBaseUrl(StringUtils.isNotBlank(globalRetrofitBuilderBean.getBaseUrl()) ? globalRetrofitBuilderBean.getBaseUrl() : retrofitBuilderAnnotation.baseUrl());
+                    retrofitBuilderBean.setClient(globalRetrofitBuilderBean.getClient() != null ? globalRetrofitBuilderBean.getClient() : retrofitBuilderAnnotation.client());
+                    retrofitBuilderBean.setCallbackExecutor(globalRetrofitBuilderBean.getCallbackExecutor() != null ? globalRetrofitBuilderBean.getCallbackExecutor() : retrofitBuilderAnnotation.callbackExecutor());
+                    retrofitBuilderBean.setAddCallAdapterFactory(globalRetrofitBuilderBean.getAddCallAdapterFactory() != null ? globalRetrofitBuilderBean.getAddCallAdapterFactory() : retrofitBuilderAnnotation.addCallAdapterFactory());
+                    retrofitBuilderBean.setAddConverterFactory(globalRetrofitBuilderBean.getAddConverterFactory() != null ? globalRetrofitBuilderBean.getAddConverterFactory() : retrofitBuilderAnnotation.addConverterFactory());
+                    retrofitBuilderBean.setValidateEagerly(globalRetrofitBuilderBean.getValidateEagerly() != null ? globalRetrofitBuilderBean.getValidateEagerly() : retrofitBuilderAnnotation.validateEagerly());
+                    retrofitBuilderBean.setCallFactory(globalRetrofitBuilderBean.getCallFactory() != null ? globalRetrofitBuilderBean.getCallFactory() : retrofitBuilderAnnotation.callFactory());
+                } else {
+                    retrofitBuilderBean.setBaseUrl(StringUtils.isNotBlank(retrofitBuilderAnnotation.baseUrl()) ? retrofitBuilderAnnotation.baseUrl() : globalRetrofitBuilderBean.getBaseUrl());
+                    retrofitBuilderBean.setClient(retrofitBuilderAnnotation.client() != null ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderBean.getClient());
+                    retrofitBuilderBean.setCallbackExecutor(retrofitBuilderAnnotation.callbackExecutor() != null ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderBean.getCallbackExecutor());
+                    retrofitBuilderBean.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory() != null ? retrofitBuilderAnnotation.addCallAdapterFactory() : globalRetrofitBuilderBean.getAddCallAdapterFactory());
+                    retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory() != null ? retrofitBuilderAnnotation.addConverterFactory() : globalRetrofitBuilderBean.getAddConverterFactory());
+                    retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly() != null ? retrofitBuilderAnnotation.validateEagerly() : globalRetrofitBuilderBean.getValidateEagerly());
+                    retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory() != null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderBean.getCallFactory());
+                }
+            }
         }
         return retrofitBuilderBean;
     }

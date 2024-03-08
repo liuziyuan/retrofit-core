@@ -25,8 +25,8 @@ public abstract class RetrofitResourceContextBuilder {
         this.env = env;
     }
 
-    public RetrofitResourceContextBuilder build(Set<Class<?>> retrofitBuilderClassSet, RetrofitBuilderBean retrofitBuilderBean) {
-        setRetrofitServiceBeanList(retrofitBuilderClassSet, retrofitBuilderBean);
+    public RetrofitResourceContextBuilder build(Set<Class<?>> retrofitBuilderClassSet, RetrofitBuilderBean globalRetrofitBuilderBean) {
+        setRetrofitServiceBeanList(retrofitBuilderClassSet, globalRetrofitBuilderBean);
         setRetrofitClientBeanList();
         setRetrofitServiceBeanHashMap();
         return this;
@@ -52,11 +52,11 @@ public abstract class RetrofitResourceContextBuilder {
         }
     }
 
-    private void setRetrofitServiceBeanList(Set<Class<?>> retrofitBuilderClassSet, RetrofitBuilderBean retrofitBuilderBean) {
+    private void setRetrofitServiceBeanList(Set<Class<?>> retrofitBuilderClassSet, RetrofitBuilderBean globalRetrofitBuilderBean) {
         extensions = registerExtension(new ArrayList<>());
         RetrofitApiServiceBeanGenerator serviceBeanHandler;
         for (Class<?> clazz : retrofitBuilderClassSet) {
-            serviceBeanHandler = new RetrofitApiServiceBeanGenerator(clazz, env, retrofitBuilderBean);
+            serviceBeanHandler = new RetrofitApiServiceBeanGenerator(clazz, env, globalRetrofitBuilderBean);
             final RetrofitApiServiceBean serviceBean = serviceBeanHandler.generate(extensions);
             if (serviceBean != null) {
                 retrofitApiServiceBeanList.add(serviceBean);
