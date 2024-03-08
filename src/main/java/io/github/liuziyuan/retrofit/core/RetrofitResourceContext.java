@@ -30,8 +30,12 @@ public class RetrofitResourceContext {
         return retrofitClients;
     }
 
-    public RetrofitApiServiceBean getRetrofitApiServiceBean(String currentClass) {
-        return retrofitApiServices.get(currentClass);
+    public RetrofitApiServiceBean getRetrofitApiServiceBean(String clazzFullName) {
+        return retrofitApiServices.get(clazzFullName);
+    }
+
+    public RetrofitApiServiceBean getRetrofitApiServiceBean(Class<?> clazz) {
+        return retrofitApiServices.get(clazz.getName());
     }
 
 }
