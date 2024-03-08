@@ -6,6 +6,7 @@ import io.github.liuziyuan.retrofit.core.util.BooleanUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -48,34 +49,33 @@ public class RetrofitResourceComparer {
     public boolean callAdapterFactoryCompare() {
         List<String> clientBeanCallAdapterFactoryList = new ArrayList<>();
         for (Class<? extends BaseCallAdapterFactoryBuilder> clazz : clientBean.getRetrofitBuilder().getAddCallAdapterFactory()) {
-            clientBeanCallAdapterFactoryList.add(clazz.getSimpleName());
+            clientBeanCallAdapterFactoryList.add(clazz.getName());
         }
         List<String> serviceBeanCallAdapterFactoryList = new ArrayList<>();
         for (Class<? extends BaseCallAdapterFactoryBuilder> clazz : serviceBean.getRetrofitBuilder().getAddCallAdapterFactory()) {
-            serviceBeanCallAdapterFactoryList.add(clazz.getSimpleName());
+            serviceBeanCallAdapterFactoryList.add(clazz.getName());
         }
-        return clientBeanCallAdapterFactoryList.containsAll(serviceBeanCallAdapterFactoryList) && serviceBeanCallAdapterFactoryList.containsAll(clientBeanCallAdapterFactoryList);
+        return new HashSet<>(clientBeanCallAdapterFactoryList).equals(new HashSet<>(serviceBeanCallAdapterFactoryList));
     }
 
     public boolean converterFactoryCompare() {
         List<String> clientBeanConverterFactoryList = new ArrayList<>();
         for (Class<? extends BaseConverterFactoryBuilder> clazz : clientBean.getRetrofitBuilder().getAddConverterFactory()) {
-            clientBeanConverterFactoryList.add(clazz.getSimpleName());
+            clientBeanConverterFactoryList.add(clazz.getName());
         }
         List<String> serviceBeanConverterFactoryList = new ArrayList<>();
         for (Class<? extends BaseConverterFactoryBuilder> clazz : serviceBean.getRetrofitBuilder().getAddConverterFactory()) {
-            serviceBeanConverterFactoryList.add(clazz.getSimpleName());
+            serviceBeanConverterFactoryList.add(clazz.getName());
         }
-        return clientBeanConverterFactoryList.containsAll(serviceBeanConverterFactoryList) && serviceBeanConverterFactoryList.containsAll(clientBeanConverterFactoryList);
+        return new HashSet<>(clientBeanConverterFactoryList).equals(new HashSet<>(serviceBeanConverterFactoryList));
     }
 
     public boolean interceptorsCompare() {
-        List<String> clientBeanInterceptorSimpleNameList = new ArrayList<>();
-        clientBean.getInterceptors().forEach(i -> clientBeanInterceptorSimpleNameList.add(i.handler().getSimpleName()));
-        List<String> serviceBeanInterceptorSimpleNameList = new ArrayList<>();
-        serviceBean.getInterceptors().forEach(i -> serviceBeanInterceptorSimpleNameList.add(i.handler().getSimpleName()));
-        return clientBeanInterceptorSimpleNameList.containsAll(serviceBeanInterceptorSimpleNameList) &&
-                serviceBeanInterceptorSimpleNameList.containsAll(clientBeanInterceptorSimpleNameList);
+        List<String> clientBeanInterceptorNameList = new ArrayList<>();
+        clientBean.getInterceptors().forEach(i -> clientBeanInterceptorNameList.add(i.handler().getName()));
+        List<String> serviceBeanInterceptorNameList = new ArrayList<>();
+        serviceBean.getInterceptors().forEach(i -> serviceBeanInterceptorNameList.add(i.handler().getName()));
+        return new HashSet<>(clientBeanInterceptorNameList).equals(new HashSet<>(serviceBeanInterceptorNameList));
     }
 
     public boolean hostUrlCompare() {
