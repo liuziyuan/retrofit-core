@@ -4,6 +4,9 @@ import io.github.liuziyuan.retrofit.core.Env;
 import io.github.liuziyuan.retrofit.core.RetrofitInterceptorExtension;
 import io.github.liuziyuan.retrofit.core.OverrideRule;
 import io.github.liuziyuan.retrofit.core.annotation.*;
+import io.github.liuziyuan.retrofit.core.builder.BaseCallBackExecutorBuilder;
+import io.github.liuziyuan.retrofit.core.builder.BaseCallFactoryBuilder;
+import io.github.liuziyuan.retrofit.core.builder.BaseOkHttpClientBuilder;
 import io.github.liuziyuan.retrofit.core.exception.RetrofitStarterException;
 import io.github.liuziyuan.retrofit.core.generator.Generator;
 import org.apache.commons.lang3.StringUtils;
@@ -74,12 +77,12 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
                     retrofitBuilderBean.setCallFactory(globalRetrofitBuilderBean.getCallFactory() != null ? globalRetrofitBuilderBean.getCallFactory() : retrofitBuilderAnnotation.callFactory());
                 } else {
                     retrofitBuilderBean.setBaseUrl(StringUtils.isNotBlank(retrofitBuilderAnnotation.baseUrl()) ? retrofitBuilderAnnotation.baseUrl() : globalRetrofitBuilderBean.getBaseUrl());
-                    retrofitBuilderBean.setClient(retrofitBuilderAnnotation.client() != null ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderBean.getClient());
-                    retrofitBuilderBean.setCallbackExecutor(retrofitBuilderAnnotation.callbackExecutor() != null ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderBean.getCallbackExecutor());
-                    retrofitBuilderBean.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory() != null ? retrofitBuilderAnnotation.addCallAdapterFactory() : globalRetrofitBuilderBean.getAddCallAdapterFactory());
-                    retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory() != null ? retrofitBuilderAnnotation.addConverterFactory() : globalRetrofitBuilderBean.getAddConverterFactory());
+                    retrofitBuilderBean.setClient(!retrofitBuilderAnnotation.client().getName().equals(BaseOkHttpClientBuilder.class.getName()) ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderBean.getClient());
+                    retrofitBuilderBean.setCallbackExecutor(!retrofitBuilderAnnotation.callbackExecutor().getName().equals(BaseCallBackExecutorBuilder.class.getName()) ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderBean.getCallbackExecutor());
+                    retrofitBuilderBean.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory().length != 0 ? retrofitBuilderAnnotation.addCallAdapterFactory() : globalRetrofitBuilderBean.getAddCallAdapterFactory());
+                    retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory().length != 0 ? retrofitBuilderAnnotation.addConverterFactory() : globalRetrofitBuilderBean.getAddConverterFactory());
                     retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly() != null ? retrofitBuilderAnnotation.validateEagerly() : globalRetrofitBuilderBean.getValidateEagerly());
-                    retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory() != null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderBean.getCallFactory());
+                    retrofitBuilderBean.setCallFactory(!retrofitBuilderAnnotation.callFactory().getName().equals(BaseCallFactoryBuilder.class.getName()) ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderBean.getCallFactory());
                 }
             } else {
                 setRetrofitBuilderBeanByAnnotation(retrofitBuilderAnnotation, retrofitBuilderBean);
