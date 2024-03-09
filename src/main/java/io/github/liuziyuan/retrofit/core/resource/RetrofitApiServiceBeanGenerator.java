@@ -1,19 +1,15 @@
 package io.github.liuziyuan.retrofit.core.resource;
 
 import io.github.liuziyuan.retrofit.core.Env;
-import io.github.liuziyuan.retrofit.core.Extension;
+import io.github.liuziyuan.retrofit.core.RetrofitInterceptorExtension;
 import io.github.liuziyuan.retrofit.core.OverrideRule;
 import io.github.liuziyuan.retrofit.core.annotation.*;
 import io.github.liuziyuan.retrofit.core.exception.RetrofitStarterException;
 import io.github.liuziyuan.retrofit.core.generator.Generator;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * generate RetrofitServiceBean object
@@ -24,18 +20,17 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
     private final Class<?> clazz;
     private final Env env;
     private final RetrofitBuilderBean globalRetrofitBuilderBean;
+    private final List<RetrofitInterceptorExtension> interceptorExtensions;
 
-    public RetrofitApiServiceBeanGenerator(Class<?> clazz, Env env, RetrofitBuilderBean globalRetrofitBuilderBean) {
+    public RetrofitApiServiceBeanGenerator(Class<?> clazz, Env env, RetrofitBuilderBean globalRetrofitBuilderBean, List<RetrofitInterceptorExtension> interceptorExtensions) {
         this.clazz = clazz;
         this.env = env;
         this.globalRetrofitBuilderBean = globalRetrofitBuilderBean;
+        this.interceptorExtensions = interceptorExtensions;
     }
 
-    public RetrofitApiServiceBean generate(List<Extension> extensions) {
-        return generateInner(extensions);
-    }
-
-    private RetrofitApiServiceBean generateInner(@Nullable List<Extension> extensions) {
+    @Override
+    public RetrofitApiServiceBean generate() {
         Class<?> retrofitBuilderClazz = getParentRetrofitBuilderClazz();
         RetrofitApiServiceBean retrofitApiServiceBean = new RetrofitApiServiceBean();
         retrofitApiServiceBean.setSelfClazz(clazz);
@@ -45,10 +40,10 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
         retrofitApiServiceBean.setRetrofitBuilder(retrofitBuilderBean);
         Set<RetrofitInterceptor> interceptors = getInterceptors(retrofitBuilderClazz);
         Set<RetrofitInterceptor> myInterceptors = getInterceptors(clazz);
-        if (extensions != null) {
-            for (Extension extension : extensions) {
+        if (interceptorExtensions != null) {
+            for (RetrofitInterceptorExtension interceptorExtension : interceptorExtensions) {
                 try {
-                    RetrofitInterceptor annotation = extension.createAnnotation().getAnnotation(RetrofitInterceptor.class);
+                    RetrofitInterceptor annotation = interceptorExtension.createAnnotation().getAnnotation(RetrofitInterceptor.class);
                     myInterceptors.add(annotation);
                 } catch (NullPointerException ignored) {
                 }
@@ -102,12 +97,6 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
         retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory());
         retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly());
         retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory());
-    }
-
-    @Override
-    public RetrofitApiServiceBean generate() {
-        return generateInner(null);
-
     }
 
     private RetrofitUrl getRetrofitUrl(RetrofitBuilderBean retrofitBuilderBean) {

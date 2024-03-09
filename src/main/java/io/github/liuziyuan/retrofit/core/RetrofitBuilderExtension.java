@@ -2,7 +2,7 @@ package io.github.liuziyuan.retrofit.core;
 
 import io.github.liuziyuan.retrofit.core.builder.*;
 
-public interface GlobalParamConfig {
+public interface RetrofitBuilderExtension {
 
     boolean enable();
 

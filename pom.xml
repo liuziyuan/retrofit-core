@@ -182,7 +182,7 @@
 <!--                <groupId>org.sonatype.central</groupId>-->
 <!--                <artifactId>central-publishing-maven-plugin</artifactId>-->
 <!--                <version>0.4.0</version>-->
-<!--                <extensions>true</extensions>-->
+<!--                <interceptorExtensions>true</interceptorExtensions>-->
 <!--                <configuration>-->
 <!--                    <publishingServerId>central</publishingServerId>-->
 <!--                    <tokenAuth>true</tokenAuth>-->

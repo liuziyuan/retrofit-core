@@ -9,14 +9,12 @@ import java.util.*;
  *
  * @author liuziyuan
  */
-public abstract class RetrofitResourceContextBuilder {
+public class RetrofitResourceContextBuilder {
 
     private List<RetrofitClientBean> retrofitClientBeanList;
     private List<RetrofitApiServiceBean> retrofitApiServiceBeanList;
     private final Map<String, RetrofitApiServiceBean> retrofitServiceBeanHashMap;
     private final Env env;
-    private List<Extension> extensions;
-    public abstract List<Extension> registerExtension(List<Extension> extensions);
 
     public RetrofitResourceContextBuilder(Env env) {
         retrofitClientBeanList = new ArrayList<>();
@@ -25,8 +23,8 @@ public abstract class RetrofitResourceContextBuilder {
         this.env = env;
     }
 
-    public RetrofitResourceContextBuilder build(Set<Class<?>> retrofitBuilderClassSet, RetrofitBuilderBean globalRetrofitBuilderBean) {
-        setRetrofitServiceBeanList(retrofitBuilderClassSet, globalRetrofitBuilderBean);
+    public RetrofitResourceContextBuilder build(Set<Class<?>> retrofitBuilderClassSet, RetrofitBuilderBean globalRetrofitBuilderBean, List<RetrofitInterceptorExtension> interceptorExtensions) {
+        setRetrofitServiceBeanList(retrofitBuilderClassSet, globalRetrofitBuilderBean, interceptorExtensions);
         setRetrofitClientBeanList();
         setRetrofitServiceBeanHashMap();
         return this;
@@ -52,12 +50,11 @@ public abstract class RetrofitResourceContextBuilder {
         }
     }
 
-    private void setRetrofitServiceBeanList(Set<Class<?>> retrofitBuilderClassSet, RetrofitBuilderBean globalRetrofitBuilderBean) {
-        extensions = registerExtension(new ArrayList<>());
+    private void setRetrofitServiceBeanList(Set<Class<?>> retrofitBuilderClassSet, RetrofitBuilderBean globalRetrofitBuilderBean, List<RetrofitInterceptorExtension> interceptorExtensions) {
         RetrofitApiServiceBeanGenerator serviceBeanHandler;
         for (Class<?> clazz : retrofitBuilderClassSet) {
-            serviceBeanHandler = new RetrofitApiServiceBeanGenerator(clazz, env, globalRetrofitBuilderBean);
-            final RetrofitApiServiceBean serviceBean = serviceBeanHandler.generate(extensions);
+            serviceBeanHandler = new RetrofitApiServiceBeanGenerator(clazz, env, globalRetrofitBuilderBean, interceptorExtensions);
+            final RetrofitApiServiceBean serviceBean = serviceBeanHandler.generate();
             if (serviceBean != null) {
                 retrofitApiServiceBeanList.add(serviceBean);
             }
