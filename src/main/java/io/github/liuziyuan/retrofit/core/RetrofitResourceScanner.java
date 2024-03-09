@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
  * @author liuziyuan
  */
 @Slf4j
-public abstract class RetrofitResourceScanner {
+public class RetrofitResourceScanner {
 
     private String[] basePackages;
 
