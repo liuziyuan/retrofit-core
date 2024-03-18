@@ -1,5 +1,6 @@
 package io.github.liuziyuan.retrofit.core.annotation;
 
+import io.github.liuziyuan.retrofit.core.OverrideRule;
 import io.github.liuziyuan.retrofit.core.builder.*;
 import okhttp3.HttpUrl;
 import retrofit2.http.GET;
@@ -79,7 +80,11 @@ public @interface RetrofitBuilder {
 
     Class<? extends BaseCallFactoryBuilder> callFactory() default BaseCallFactoryBuilder.class;
 
-    String validateEagerly() default "0";
+    /**
+     * true and 1 is boolean true, false and 0 is boolean false, others is boolean false
+     * @return
+     */
+    boolean validateEagerly() default false;
 
-    boolean denyGlobalConfig() default false;
+    OverrideRule globalOverwriteRule() default OverrideRule.GLOBAL_FIRST;
 }
