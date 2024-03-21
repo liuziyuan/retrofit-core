@@ -41,8 +41,8 @@ public class RetrofitResourceComparer {
     }
 
     public boolean validateEagerlyCompare() {
-        final boolean clientBeanValidateEagerly = BooleanUtil.transformToBoolean(clientBean.getRetrofitBuilder().getValidateEagerly());
-        final boolean serviceBeanValidateEagerly = BooleanUtil.transformToBoolean(serviceBean.getRetrofitBuilder().getValidateEagerly());
+        final boolean clientBeanValidateEagerly = clientBean.getRetrofitBuilder().isValidateEagerly();
+        final boolean serviceBeanValidateEagerly = serviceBean.getRetrofitBuilder().isValidateEagerly();
         return clientBeanValidateEagerly == serviceBeanValidateEagerly;
     }
 
