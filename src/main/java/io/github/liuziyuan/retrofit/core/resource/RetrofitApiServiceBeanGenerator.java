@@ -48,6 +48,7 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
             for (RetrofitInterceptorExtension interceptorExtension : interceptorExtensions) {
                 try {
                     RetrofitInterceptor annotation = interceptorExtension.createAnnotation().getAnnotation(RetrofitInterceptor.class);
+                    assert annotation.handler().getName().equals(interceptorExtension.createInterceptor().getName());
                     myInterceptors.add(annotation);
                 } catch (NullPointerException ignored) {
                 }
