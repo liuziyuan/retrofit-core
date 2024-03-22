@@ -52,36 +52,37 @@ public class RetrofitBuilderBean {
     private void setRetrofitBuilderBeanByLocalFirst(RetrofitBuilder retrofitBuilderAnnotation, RetrofitBuilderExtension globalRetrofitBuilderExtension) {
         this.setEnable(true);
         this.setBaseUrl(StringUtils.isNotBlank(retrofitBuilderAnnotation.baseUrl()) ? retrofitBuilderAnnotation.baseUrl() : globalRetrofitBuilderExtension.globalBaseUrl());
-        this.setClient(!retrofitBuilderAnnotation.client().getName().equals(BaseOkHttpClientBuilder.class.getName()) ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz() == null ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz());
-        this.setCallbackExecutor(!retrofitBuilderAnnotation.callbackExecutor().getName().equals(BaseCallBackExecutorBuilder.class.getName()) ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz() == null ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz());
+        this.setClient(getClientClazz(!retrofitBuilderAnnotation.client().getName().equals(BaseOkHttpClientBuilder.class.getName()) ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz() == null ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz()));
+        this.setCallbackExecutor(getCallBackExecutorClazz(!retrofitBuilderAnnotation.callbackExecutor().getName().equals(BaseCallBackExecutorBuilder.class.getName()) ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz() == null ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz()));
         this.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory().length != 0 ? retrofitBuilderAnnotation.addCallAdapterFactory() : globalRetrofitBuilderExtension.globalCallAdapterFactoryBuilderClazz());
         this.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory().length != 0 ? retrofitBuilderAnnotation.addConverterFactory() : globalRetrofitBuilderExtension.globalConverterFactoryBuilderClazz());
         this.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly());
-        this.setCallFactory(!retrofitBuilderAnnotation.callFactory().getName().equals(BaseCallFactoryBuilder.class.getName()) ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz() == null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz());
+        this.setCallFactory(getCallFactoryClazz(!retrofitBuilderAnnotation.callFactory().getName().equals(BaseCallFactoryBuilder.class.getName()) ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz() == null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz()));
     }
 
     /**
      * if merge, default date is local_first, then merge global CallAdapterFactory and ConverterFactory to local_first
+     *
      * @param retrofitBuilderAnnotation
      * @param globalRetrofitBuilderExtension
      */
     private void setRetrofitBuilderBeanByMerge(RetrofitBuilder retrofitBuilderAnnotation, RetrofitBuilderExtension globalRetrofitBuilderExtension) {
         this.setEnable(true);
         this.setBaseUrl(StringUtils.isNotBlank(retrofitBuilderAnnotation.baseUrl()) ? retrofitBuilderAnnotation.baseUrl() : globalRetrofitBuilderExtension.globalBaseUrl());
-        this.setClient(!retrofitBuilderAnnotation.client().getName().equals(BaseOkHttpClientBuilder.class.getName()) ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz() == null ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz());
-        this.setCallbackExecutor(!retrofitBuilderAnnotation.callbackExecutor().getName().equals(BaseCallBackExecutorBuilder.class.getName()) ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz() == null ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz());
+        this.setClient(getClientClazz(!retrofitBuilderAnnotation.client().getName().equals(BaseOkHttpClientBuilder.class.getName()) ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz() == null ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz()));
+        this.setCallbackExecutor(getCallBackExecutorClazz(!retrofitBuilderAnnotation.callbackExecutor().getName().equals(BaseCallBackExecutorBuilder.class.getName()) ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz() == null ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz()));
         this.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly());
-        this.setCallFactory(!retrofitBuilderAnnotation.callFactory().getName().equals(BaseCallFactoryBuilder.class.getName()) ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz() == null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz());
+        this.setCallFactory(getCallFactoryClazz(!retrofitBuilderAnnotation.callFactory().getName().equals(BaseCallFactoryBuilder.class.getName()) ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz() == null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz()));
         this.setAddCallAdapterFactory(getCallAdapterFactories(retrofitBuilderAnnotation, globalRetrofitBuilderExtension));
         this.setAddConverterFactory(getConverterFactories(retrofitBuilderAnnotation, globalRetrofitBuilderExtension));
     }
 
     private Class<? extends BaseCallAdapterFactoryBuilder>[] getCallAdapterFactories(RetrofitBuilder retrofitBuilderAnnotation, RetrofitBuilderExtension globalRetrofitBuilderExtension) {
         Set<Class<? extends BaseCallAdapterFactoryBuilder>> addCallAdapterFactoryBuilderList = new HashSet<>();
-        if (globalRetrofitBuilderExtension.globalConverterFactoryBuilderClazz() != null) {
+        if (globalRetrofitBuilderExtension.globalCallAdapterFactoryBuilderClazz() != null) {
             addCallAdapterFactoryBuilderList.addAll(Arrays.asList(globalRetrofitBuilderExtension.globalCallAdapterFactoryBuilderClazz()));
         }
-        if (retrofitBuilderAnnotation.addConverterFactory().length != 0) {
+        if (retrofitBuilderAnnotation.addCallAdapterFactory().length != 0) {
             addCallAdapterFactoryBuilderList.addAll(Arrays.asList(retrofitBuilderAnnotation.addCallAdapterFactory()));
         }
         return addCallAdapterFactoryBuilderList.toArray(new Class[0]);
@@ -101,12 +102,12 @@ public class RetrofitBuilderBean {
     private void setRetrofitBuilderBeanByGlobalFirst(RetrofitBuilder retrofitBuilderAnnotation, RetrofitBuilderExtension globalRetrofitBuilderExtension) {
         this.setEnable(true);
         this.setBaseUrl(StringUtils.isNotBlank(globalRetrofitBuilderExtension.globalBaseUrl()) ? globalRetrofitBuilderExtension.globalBaseUrl() : retrofitBuilderAnnotation.baseUrl());
-        this.setClient(globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz() != null ? globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz() : retrofitBuilderAnnotation.client());
-        this.setCallbackExecutor(globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz() != null ? globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz() : retrofitBuilderAnnotation.callbackExecutor());
+        this.setClient(getClientClazz(globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz() != null ? globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz() : retrofitBuilderAnnotation.client()));
+        this.setCallbackExecutor(getCallBackExecutorClazz(globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz() != null ? globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz() : retrofitBuilderAnnotation.callbackExecutor()));
         this.setAddCallAdapterFactory(globalRetrofitBuilderExtension.globalCallAdapterFactoryBuilderClazz() != null ? globalRetrofitBuilderExtension.globalCallAdapterFactoryBuilderClazz() : retrofitBuilderAnnotation.addCallAdapterFactory());
         this.setAddConverterFactory(globalRetrofitBuilderExtension.globalConverterFactoryBuilderClazz() != null ? globalRetrofitBuilderExtension.globalConverterFactoryBuilderClazz() : retrofitBuilderAnnotation.addConverterFactory());
         this.setValidateEagerly(globalRetrofitBuilderExtension.globalValidateEagerly() != null ? BooleanUtil.transformToBoolean(globalRetrofitBuilderExtension.globalValidateEagerly()) : retrofitBuilderAnnotation.validateEagerly());
-        this.setCallFactory(globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz() != null ? globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz() : retrofitBuilderAnnotation.callFactory());
+        this.setCallFactory(getCallFactoryClazz(globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz() != null ? globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz() : retrofitBuilderAnnotation.callFactory()));
     }
 
     private void setRetrofitBuilderBeanByLocalOnly(RetrofitBuilder retrofitBuilderAnnotation) {
@@ -123,11 +124,34 @@ public class RetrofitBuilderBean {
     private void setRetrofitBuilderBeanByGlobalOnly(RetrofitBuilderExtension globalRetrofitBuilderExtension) {
         this.setEnable(globalRetrofitBuilderExtension.enable());
         this.setBaseUrl(globalRetrofitBuilderExtension.globalBaseUrl());
-        this.setClient(globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz());
-        this.setCallbackExecutor(globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz());
+        this.setClient(getClientClazz(globalRetrofitBuilderExtension.globalOkHttpClientBuilderClazz()));
+        this.setCallbackExecutor(getCallBackExecutorClazz(globalRetrofitBuilderExtension.globalCallBackExecutorBuilderClazz()));
         this.setAddCallAdapterFactory(globalRetrofitBuilderExtension.globalCallAdapterFactoryBuilderClazz());
         this.setAddConverterFactory(globalRetrofitBuilderExtension.globalConverterFactoryBuilderClazz());
         this.setValidateEagerly(BooleanUtil.transformToBoolean(globalRetrofitBuilderExtension.globalValidateEagerly()));
-        this.setCallFactory(globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz());
+        this.setCallFactory(getCallFactoryClazz(globalRetrofitBuilderExtension.globalCallFactoryBuilderClazz()));
     }
+
+    private Class<? extends BaseOkHttpClientBuilder> getClientClazz(Class<? extends BaseOkHttpClientBuilder> clazz) {
+        if (clazz == null) {
+            return BaseOkHttpClientBuilder.class;
+        }
+        return clazz;
+    }
+
+    private Class<? extends BaseCallBackExecutorBuilder> getCallBackExecutorClazz(Class<? extends BaseCallBackExecutorBuilder> clazz) {
+        if (clazz == null) {
+            return BaseCallBackExecutorBuilder.class;
+        }
+        return clazz;
+    }
+
+    private Class<? extends BaseCallFactoryBuilder> getCallFactoryClazz(Class<? extends BaseCallFactoryBuilder> clazz) {
+        if (clazz == null) {
+            return BaseCallFactoryBuilder.class;
+        }
+        return clazz;
+    }
+
+
 }

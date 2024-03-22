@@ -6,8 +6,6 @@ public interface RetrofitBuilderExtension {
 
     boolean enable();
 
-    OverrideRule overwriteType();
-
     String globalBaseUrl();
 
     Class<? extends BaseCallAdapterFactoryBuilder>[] globalCallAdapterFactoryBuilderClazz();
