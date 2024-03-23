@@ -3,14 +3,9 @@ package io.github.liuziyuan.retrofit.core.resource;
 import io.github.liuziyuan.retrofit.core.Env;
 import io.github.liuziyuan.retrofit.core.RetrofitBuilderExtension;
 import io.github.liuziyuan.retrofit.core.RetrofitInterceptorExtension;
-import io.github.liuziyuan.retrofit.core.OverrideRule;
 import io.github.liuziyuan.retrofit.core.annotation.*;
-import io.github.liuziyuan.retrofit.core.builder.BaseCallBackExecutorBuilder;
-import io.github.liuziyuan.retrofit.core.builder.BaseCallFactoryBuilder;
-import io.github.liuziyuan.retrofit.core.builder.BaseOkHttpClientBuilder;
 import io.github.liuziyuan.retrofit.core.exception.RetrofitStarterException;
 import io.github.liuziyuan.retrofit.core.generator.Generator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -26,7 +21,10 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
     private final RetrofitBuilderExtension globalRetrofitBuilderExtension;
     private final List<RetrofitInterceptorExtension> interceptorExtensions;
 
-    public RetrofitApiServiceBeanGenerator(Class<?> clazz, Env env, RetrofitBuilderExtension globalRetrofitBuilderExtension, List<RetrofitInterceptorExtension> interceptorExtensions) {
+    public RetrofitApiServiceBeanGenerator(Class<?> clazz,
+                                           Env env,
+                                           RetrofitBuilderExtension globalRetrofitBuilderExtension,
+                                           List<RetrofitInterceptorExtension> interceptorExtensions) {
         this.clazz = clazz;
         this.env = env;
         this.globalRetrofitBuilderExtension = globalRetrofitBuilderExtension;
@@ -60,6 +58,7 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
         retrofitApiServiceBean.setRetrofitUrl(retrofitUrl);
         return retrofitApiServiceBean;
     }
+
 
     private RetrofitUrl getRetrofitUrl(RetrofitBuilderBean retrofitBuilderBean) {
         final RetrofitUrlPrefix retrofitUrlPrefix = clazz.getDeclaredAnnotation(RetrofitUrlPrefix.class);

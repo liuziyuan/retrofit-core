@@ -18,12 +18,17 @@ import java.util.Map;
 @Setter(AccessLevel.PACKAGE)
 public class RetrofitResourceContext {
 
+    private String[] basePackages;
     private List<RetrofitClientBean> retrofitClients;
     private Map<String, RetrofitApiServiceBean> retrofitApiServices;
 
-    public RetrofitResourceContext(List<RetrofitClientBean> retrofitClients, Map<String, RetrofitApiServiceBean> retrofitApiServices) {
+    public RetrofitResourceContext() {
+
+    }
+    public RetrofitResourceContext(String[] basePackages, List<RetrofitClientBean> retrofitClients, Map<String, RetrofitApiServiceBean> retrofitApiServices) {
         this.retrofitApiServices = retrofitApiServices;
         this.retrofitClients = retrofitClients;
+        this.basePackages = basePackages;
     }
 
     public List<RetrofitClientBean> getRetrofitClients() {
