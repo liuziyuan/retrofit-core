@@ -1,15 +1,11 @@
 package io.github.liuziyuan.retrofit.core.resource;
 
 import io.github.liuziyuan.retrofit.core.Env;
+import io.github.liuziyuan.retrofit.core.RetrofitBuilderExtension;
 import io.github.liuziyuan.retrofit.core.RetrofitInterceptorExtension;
-import io.github.liuziyuan.retrofit.core.OverrideRule;
 import io.github.liuziyuan.retrofit.core.annotation.*;
-import io.github.liuziyuan.retrofit.core.builder.BaseCallBackExecutorBuilder;
-import io.github.liuziyuan.retrofit.core.builder.BaseCallFactoryBuilder;
-import io.github.liuziyuan.retrofit.core.builder.BaseOkHttpClientBuilder;
 import io.github.liuziyuan.retrofit.core.exception.RetrofitStarterException;
 import io.github.liuziyuan.retrofit.core.generator.Generator;
-import org.apache.commons.lang3.StringUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -22,13 +18,16 @@ import java.util.*;
 public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiServiceBean> {
     private final Class<?> clazz;
     private final Env env;
-    private final RetrofitBuilderBean globalRetrofitBuilderBean;
+    private final RetrofitBuilderExtension globalRetrofitBuilderExtension;
     private final List<RetrofitInterceptorExtension> interceptorExtensions;
 
-    public RetrofitApiServiceBeanGenerator(Class<?> clazz, Env env, RetrofitBuilderBean globalRetrofitBuilderBean, List<RetrofitInterceptorExtension> interceptorExtensions) {
+    public RetrofitApiServiceBeanGenerator(Class<?> clazz,
+                                           Env env,
+                                           RetrofitBuilderExtension globalRetrofitBuilderExtension,
+                                           List<RetrofitInterceptorExtension> interceptorExtensions) {
         this.clazz = clazz;
         this.env = env;
-        this.globalRetrofitBuilderBean = globalRetrofitBuilderBean;
+        this.globalRetrofitBuilderExtension = globalRetrofitBuilderExtension;
         this.interceptorExtensions = interceptorExtensions;
     }
 
@@ -39,7 +38,7 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
         retrofitApiServiceBean.setSelfClazz(clazz);
         retrofitApiServiceBean.setParentClazz(retrofitBuilderClazz);
         //将RetrofitBuilder注解信息注入到RetrofitBuilderBean中
-        RetrofitBuilderBean retrofitBuilderBean = getRetrofitBuilder(retrofitBuilderClazz, globalRetrofitBuilderBean);
+        RetrofitBuilderBean retrofitBuilderBean = new RetrofitBuilderBean(retrofitBuilderClazz, globalRetrofitBuilderExtension);
         retrofitApiServiceBean.setRetrofitBuilder(retrofitBuilderBean);
         Set<RetrofitInterceptor> interceptors = getInterceptors(retrofitBuilderClazz);
         Set<RetrofitInterceptor> myInterceptors = getInterceptors(clazz);
@@ -47,6 +46,7 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
             for (RetrofitInterceptorExtension interceptorExtension : interceptorExtensions) {
                 try {
                     RetrofitInterceptor annotation = interceptorExtension.createAnnotation().getAnnotation(RetrofitInterceptor.class);
+                    assert annotation.handler().getName().equals(interceptorExtension.createInterceptor().getName());
                     myInterceptors.add(annotation);
                 } catch (NullPointerException ignored) {
                 }
@@ -59,48 +59,6 @@ public class RetrofitApiServiceBeanGenerator implements Generator<RetrofitApiSer
         return retrofitApiServiceBean;
     }
 
-    private RetrofitBuilderBean getRetrofitBuilder(Class<?> retrofitBuilderClazz, RetrofitBuilderBean globalRetrofitBuilderBean) {
-        RetrofitBuilder retrofitBuilderAnnotation = retrofitBuilderClazz.getDeclaredAnnotation(RetrofitBuilder.class);
-        RetrofitBuilderBean retrofitBuilderBean = new RetrofitBuilderBean();
-        if (retrofitBuilderAnnotation.denyGlobalConfig()) {
-            setRetrofitBuilderBeanByAnnotation(retrofitBuilderAnnotation, retrofitBuilderBean);
-        } else {
-            if (globalRetrofitBuilderBean.isEnable()) {
-                retrofitBuilderBean.setEnable(true);
-                if (globalRetrofitBuilderBean.getOverwriteType() == OverrideRule.GLOBAL_FIRST) {
-                    retrofitBuilderBean.setBaseUrl(StringUtils.isNotBlank(globalRetrofitBuilderBean.getBaseUrl()) ? globalRetrofitBuilderBean.getBaseUrl() : retrofitBuilderAnnotation.baseUrl());
-                    retrofitBuilderBean.setClient(globalRetrofitBuilderBean.getClient() != null ? globalRetrofitBuilderBean.getClient() : retrofitBuilderAnnotation.client());
-                    retrofitBuilderBean.setCallbackExecutor(globalRetrofitBuilderBean.getCallbackExecutor() != null ? globalRetrofitBuilderBean.getCallbackExecutor() : retrofitBuilderAnnotation.callbackExecutor());
-                    retrofitBuilderBean.setAddCallAdapterFactory(globalRetrofitBuilderBean.getAddCallAdapterFactory() != null ? globalRetrofitBuilderBean.getAddCallAdapterFactory() : retrofitBuilderAnnotation.addCallAdapterFactory());
-                    retrofitBuilderBean.setAddConverterFactory(globalRetrofitBuilderBean.getAddConverterFactory() != null ? globalRetrofitBuilderBean.getAddConverterFactory() : retrofitBuilderAnnotation.addConverterFactory());
-                    retrofitBuilderBean.setValidateEagerly(globalRetrofitBuilderBean.getValidateEagerly() != null ? globalRetrofitBuilderBean.getValidateEagerly() : retrofitBuilderAnnotation.validateEagerly());
-                    retrofitBuilderBean.setCallFactory(globalRetrofitBuilderBean.getCallFactory() != null ? globalRetrofitBuilderBean.getCallFactory() : retrofitBuilderAnnotation.callFactory());
-                } else {
-                    retrofitBuilderBean.setBaseUrl(StringUtils.isNotBlank(retrofitBuilderAnnotation.baseUrl()) ? retrofitBuilderAnnotation.baseUrl() : globalRetrofitBuilderBean.getBaseUrl());
-                    retrofitBuilderBean.setClient(!retrofitBuilderAnnotation.client().getName().equals(BaseOkHttpClientBuilder.class.getName()) ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderBean.getClient() == null ? retrofitBuilderAnnotation.client() : globalRetrofitBuilderBean.getClient());
-                    retrofitBuilderBean.setCallbackExecutor(!retrofitBuilderAnnotation.callbackExecutor().getName().equals(BaseCallBackExecutorBuilder.class.getName()) ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderBean.getCallbackExecutor() == null ? retrofitBuilderAnnotation.callbackExecutor() : globalRetrofitBuilderBean.getCallbackExecutor());
-                    retrofitBuilderBean.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory().length != 0 ? retrofitBuilderAnnotation.addCallAdapterFactory() : globalRetrofitBuilderBean.getAddCallAdapterFactory());
-                    retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory().length != 0 ? retrofitBuilderAnnotation.addConverterFactory() : globalRetrofitBuilderBean.getAddConverterFactory());
-                    retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly() != null ? retrofitBuilderAnnotation.validateEagerly() : globalRetrofitBuilderBean.getValidateEagerly());
-                    retrofitBuilderBean.setCallFactory(!retrofitBuilderAnnotation.callFactory().getName().equals(BaseCallFactoryBuilder.class.getName()) ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderBean.getCallFactory() == null ? retrofitBuilderAnnotation.callFactory() : globalRetrofitBuilderBean.getCallFactory());
-                }
-            } else {
-                setRetrofitBuilderBeanByAnnotation(retrofitBuilderAnnotation, retrofitBuilderBean);
-            }
-        }
-        return retrofitBuilderBean;
-    }
-
-    private void setRetrofitBuilderBeanByAnnotation(RetrofitBuilder retrofitBuilderAnnotation, RetrofitBuilderBean retrofitBuilderBean) {
-        retrofitBuilderBean.setEnable(false);
-        retrofitBuilderBean.setBaseUrl(retrofitBuilderAnnotation.baseUrl());
-        retrofitBuilderBean.setClient(retrofitBuilderAnnotation.client());
-        retrofitBuilderBean.setCallbackExecutor(retrofitBuilderAnnotation.callbackExecutor());
-        retrofitBuilderBean.setAddCallAdapterFactory(retrofitBuilderAnnotation.addCallAdapterFactory());
-        retrofitBuilderBean.setAddConverterFactory(retrofitBuilderAnnotation.addConverterFactory());
-        retrofitBuilderBean.setValidateEagerly(retrofitBuilderAnnotation.validateEagerly());
-        retrofitBuilderBean.setCallFactory(retrofitBuilderAnnotation.callFactory());
-    }
 
     private RetrofitUrl getRetrofitUrl(RetrofitBuilderBean retrofitBuilderBean) {
         final RetrofitUrlPrefix retrofitUrlPrefix = clazz.getDeclaredAnnotation(RetrofitUrlPrefix.class);

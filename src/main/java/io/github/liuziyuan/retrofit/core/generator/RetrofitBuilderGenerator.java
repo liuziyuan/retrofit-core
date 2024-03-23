@@ -2,7 +2,6 @@ package io.github.liuziyuan.retrofit.core.generator;
 
 import io.github.liuziyuan.retrofit.core.RetrofitResourceContext;
 import io.github.liuziyuan.retrofit.core.annotation.InterceptorType;
-import io.github.liuziyuan.retrofit.core.annotation.RetrofitBuilder;
 import io.github.liuziyuan.retrofit.core.annotation.RetrofitInterceptor;
 import io.github.liuziyuan.retrofit.core.builder.*;
 import io.github.liuziyuan.retrofit.core.extension.BaseInterceptor;
@@ -10,7 +9,6 @@ import io.github.liuziyuan.retrofit.core.extension.DynamicBaseUrlInterceptor;
 import io.github.liuziyuan.retrofit.core.extension.UrlOverWriteInterceptor;
 import io.github.liuziyuan.retrofit.core.resource.RetrofitBuilderBean;
 import io.github.liuziyuan.retrofit.core.resource.RetrofitClientBean;
-import io.github.liuziyuan.retrofit.core.util.BooleanUtil;
 import io.github.liuziyuan.retrofit.core.util.CollectionUtils;
 import lombok.SneakyThrows;
 import okhttp3.Call;
@@ -70,8 +68,7 @@ public abstract class RetrofitBuilderGenerator implements Generator<Retrofit.Bui
     public abstract BaseConverterFactoryBuilder buildInjectionConverterFactory(Class<? extends BaseConverterFactoryBuilder> clazz);
     private void setValidateEagerly() {
         final RetrofitBuilderBean retrofitBuilder = clientBean.getRetrofitBuilder();
-        final String validateEagerly = retrofitBuilder.getValidateEagerly();
-        builder.validateEagerly(BooleanUtil.transformToBoolean(validateEagerly));
+        builder.validateEagerly(retrofitBuilder.isValidateEagerly());
     }
 
     private void setCallFactory() {

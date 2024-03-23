@@ -1,6 +1,5 @@
 package io.github.liuziyuan.retrofit.core.resource;
 
-import io.github.liuziyuan.retrofit.core.annotation.RetrofitBuilder;
 import io.github.liuziyuan.retrofit.core.annotation.RetrofitInterceptor;
 import lombok.AccessLevel;
 import lombok.Getter;
